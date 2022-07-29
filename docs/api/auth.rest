@@ -3,7 +3,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-    "email": "admin2@mail.com",
+    "email": "admin@mail.com",
     "password": "admin54321",
     "username": "admin"
 }

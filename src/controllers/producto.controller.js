@@ -10,15 +10,19 @@ export async function listaPaginacion(req, res) {
 
     try {
         // paginar
-        let page = req.query.page;
-        let limit = req.query.limit;
+        let page = parseInt(req.query.page);
+        let limit = parseInt(req.query.limit) 
 
         let offset = 0+(page-1)*10;
 
+        console.log(offset);
+
         let lista_productos = await models.Producto.findAndCountAll({
+            offset: offset,
             limit: limit,
-            offset: offset
+            include: models.Categoria
         });
+console.log(lista_productos)
 
         res.status(200).json(lista_productos)
 
@@ -32,3 +36,35 @@ export async function listaPaginacion(req, res) {
     }
     
 }
+
+export const guardarProducto = async function(req, res){
+    // let id = req.params.id;
+    let datos = req.body;
+
+    await models.Producto.create(datos);
+    res.status(200).json({mensaje: "Producto Actualizado", error: false})
+}
+
+export const actualizaImagen = async function(req, res) {
+    console.log("*************************", req.body)
+    try{
+        let id = req.params.id
+        let datos = req.body
+        if(req.file){
+            datos.imagen = req.file.filename
+        }
+        console.log(datos)
+        // guardar
+
+        await models.Producto.update(datos, {where: {id}})
+        return res.status(200).send({mensaje: "Imagen Producto Actualizado"})
+    
+    }catch(error){
+        return res.status(500).send({
+            "mensaje": error,
+            error: true
+        })
+    }
+}
+
+

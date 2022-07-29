@@ -4,6 +4,22 @@ import * as authMiddleware from "./../middlewares/auth.middleware"
 import * as usuarioController from './../controllers/usuario.controller'
 import * as categoriaController from './../controllers/categoria.controller'
 import * as productoController from './../controllers/producto.controller'
+import * as pedidoController from './../controllers/pedido.controller'
+
+// para carga de imagenes o archivos
+import multer from "multer"
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './public/imagenes')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, uniqueSuffix + '-' +  file.originalname)
+    }
+  })
+  
+  const upload = multer({ storage: storage })
 
 
 export const Route = Router()
@@ -29,3 +45,11 @@ Route.delete('/categoria/:id', authMiddleware.auth, categoriaController.eliminar
 
 // rutas producto
 Route.get('/producto', authMiddleware.auth, productoController.listaPaginacion);
+Route.post('/producto', authMiddleware.auth, productoController.guardarProducto);
+
+Route.post('/producto/:id/actualiza-imagen', authMiddleware.auth, upload.single("imagen"), productoController.actualizaImagen)
+
+
+// rutas pedido
+Route.get('/pedido', authMiddleware.auth, pedidoController.listaPaginacion);
+Route.post('/pedido', authMiddleware.auth, pedidoController.guardarPedido);

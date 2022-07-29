@@ -15,8 +15,6 @@ export const guardarCategoria = async function(req, res){
     res.status(200).json({mensaje: "Categoria Actualizado", error: false})
 }
 
-
-
 export const mostrarCategoria = async function(req, res){
     let id = req.params.id;
 
